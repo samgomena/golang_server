@@ -19,7 +19,7 @@ func main() {
 
 	r.Handle("/status", StatusHandler).Methods("GET")
 	r.Handle("/token", JwtHandler).Methods("GET")
-	r.Handle("/admin", ValidationMiddleware(StatusHandler)).Methods("GET")
+	r.Handle("/admin", AuthMiddleware(StatusHandler)).Methods("GET")
 
 	http.ListenAndServe(":8080", handlers.LoggingHandler(os.Stdout, r))
 }

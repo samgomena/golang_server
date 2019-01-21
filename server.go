@@ -49,51 +49,50 @@ var JwtHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	// 	w.Write([]byte(tokenString))
 })
 
-func ValidationMiddleware(next http.HandlerFunc) http.HandlerFunc {
+func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		authorizationHeader := r.Header.Get("authorization")
 
-		if authorizationHeader == "" {
+		authorizationHeader := r.Header.Get("Authorization")
+
+		if len(authorizationHeader) > 7 && strings.ToUpper(authorizationHeader[0:6]) == "BEARER" {
+			authorizationHeader = authorizationHeader[7:]
+		} else {
 			http.Error(w, "Authorization header must be present", http.StatusUnauthorized)
 			return
 		}
 
-		bearer := strings.Split(authorizationHeader, " ")
-
-		if len(bearer) == 2 {
-			token, err := jwt.Parse(bearer[1], func(token *jwt.Token) (interface{}, error) {
-				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-					// 	http.Error(w, Error("Authorization header must be present", http.StatusUnauthorized))
-					return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
-				}
-				return signingKey, nil
-			})
-			if err != nil {
-				json.NewEncoder(w).Encode(Exception{Message: err.Error()})
-				return
+		token, err := jwt.Parse(authorizationHeader, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				// 	http.Error(w, Error("Authorization header must be present", http.StatusUnauthorized))
+				return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 			}
+			return signingKey, nil
+		})
+		if err != nil {
+			json.NewEncoder(w).Encode(Exception{Message: err.Error()})
+			return
+		}
 
-			if token.Valid {
-				// context.Set(r, "decoded", token.Claims)
-				next(w, r)
+		if token.Valid {
+			// context.Set(r, "decoded", token.Claims)
+			next(w, r)
 
-			} else if ve, ok := err.(*jwt.ValidationError); ok {
-				// Check verification errors
-				if ve.Errors&jwt.ValidationErrorMalformed != 0 {
-					fmt.Println("That's not even a token")
-					json.NewEncoder(w).Encode(Exception{Message: "Token is malformed"})
-				} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
-					// Token is either expired or not active yet
-					fmt.Println("Timing is everything")
-					json.NewEncoder(w).Encode(Exception{Message: "Token is expired or not valid yet"})
-				} else {
-					fmt.Println("Couldn't handle this token:", err)
-					json.NewEncoder(w).Encode(Exception{Message: "Invalid authorization token"})
-				}
+		} else if ve, ok := err.(*jwt.ValidationError); ok {
+			// Check verification errors
+			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
+				fmt.Println("That's not even a token")
+				json.NewEncoder(w).Encode(Exception{Message: "Token is malformed"})
+			} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
+				// Token is either expired or not active yet
+				fmt.Println("Timing is everything")
+				json.NewEncoder(w).Encode(Exception{Message: "Token is expired or not valid yet"})
 			} else {
 				fmt.Println("Couldn't handle this token:", err)
 				json.NewEncoder(w).Encode(Exception{Message: "Invalid authorization token"})
 			}
+		} else {
+			fmt.Println("Couldn't handle this token:", err)
+			json.NewEncoder(w).Encode(Exception{Message: "Invalid authorization token"})
 		}
 	})
 }

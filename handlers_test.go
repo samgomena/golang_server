@@ -1,9 +1,8 @@
 package main
 
 import (
-    "fmt"
-    "encoding/json"
-    "io/ioutil"
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -62,12 +61,53 @@ func TestJwtHandler(t *testing.T) {
 			status, http.StatusOK)
 	}
 
-    var m map[string]string
+	var m map[string]string
 	rrBuf, _ := ioutil.ReadAll(rr.Body)
 	json.Unmarshal(rrBuf, &m)
 
 	if _, ok := m["token"]; !ok {
-	    t.Errorf("\"TestJwtHandler\"handler returned unexpected body: got %v want %v",
+		t.Errorf("\"TestJwtHandler\"handler returned unexpected body: got %v want %v",
 			m, "token")
 	}
+}
+
+func GetTestHandler() http.HandlerFunc {
+	fn := func(rw http.ResponseWriter, req *http.Request) {
+		panic("Test entered test handler, this should not happen")
+	}
+	return http.HandlerFunc(fn)
+}
+
+func TestJwtAuthMiddleware(t *testing.T) {
+	req, err := http.NewRequest("GET", "/admin", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	handler := http.HandlerFunc(AuthMiddleware(GetTestHandler()))
+
+	rr := httptest.NewRecorder()
+
+	t.Run("Test No Auth Header Present", func(t *testing.T) {
+		handler.ServeHTTP(rr, req)
+
+		// Check the status code is what we expect.
+		if status := rr.Code; status != http.StatusUnauthorized {
+			t.Errorf("\"/AuthMiddleware\" handler returned wrong status code: got %v want %v",
+				status, http.StatusOK)
+		}
+
+	})
+
+	t.Run("Test Auth Header Present", func(t *testing.T) {
+		handler.ServeHTTP(rr, req)
+
+		// req.Header.Add("Authorization", "someTokenHere")
+		// Check the status code is what we expect.
+		if status := rr.Code; status != http.StatusUnauthorized {
+			t.Errorf("\"/AuthMiddleware\" handler returned wrong status code: got %v want %v",
+				status, http.StatusOK)
+		}
+
+	})
 }

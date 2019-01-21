@@ -4,3 +4,15 @@ github.com/gorilla/handlers v1.4.0 h1:XulKRWSQK5uChr4pEgSE4Tc/OcmnU9GJuSwdog/tZs
 github.com/gorilla/handlers v1.4.0/go.mod h1:Qkdc/uu4tH4g6mTK6auzZ766c4CA0Ng8+o/OAirnOIQ=
 github.com/gorilla/mux v1.6.2 h1:Pgr17XVTNXAk3q/r4CpKzC5xBM/qW1uVLV+IhRZpIIk=
 github.com/gorilla/mux v1.6.2/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2zaAs=
+github.com/mattn/go-runewidth v0.0.3 h1:a+kO+98RDGEfo6asOGMmpodZq4FNtnGP54yps8BzLR4=
+github.com/mattn/go-runewidth v0.0.3/go.mod h1:LwmH8dsx7+W8Uxz3IHJYH5QSwggIsqBzpuz5H//U1FU=
+github.com/mitchellh/go-homedir v1.0.0 h1:vKb8ShqSby24Yrqr/yDYkuFz8d0WUjys40rvnGC8aR0=
+github.com/mitchellh/go-homedir v1.0.0/go.mod h1:SfyaCUpYCn1Vlf4IUYiD9fPX4A5wJrkLzIz1N1q0pr0=
+github.com/motemen/go-quickfix v0.0.0-20160413151302-5c522febc679 h1:UkBp8kp/ChZOCNV1nyiKpfufVkTdYU32saV0Y6iQgKk=
+github.com/motemen/go-quickfix v0.0.0-20160413151302-5c522febc679/go.mod h1:MIkbIO1YK5LNJNfBzYUstnQr/eQTEFKzlBuRsOkknUI=
+github.com/motemen/gore v0.3.0 h1:LcpH6Os6PUPAcWNTIcwEXrlVJ4/4sTGYWAExk9lsAmg=
+github.com/motemen/gore v0.3.0/go.mod h1:jOHUyog5qCVzAXc0jmrpuQWUvAgd+HfcP88CKW5kqFw=
+github.com/peterh/liner v1.1.0 h1:f+aAedNJA6uk7+6rXsYBnhdo4Xux7ESLe+kcuVUF5os=
+github.com/peterh/liner v1.1.0/go.mod h1:CRroGNssyjTd/qIG2FyxByd2S8JEAZXBl4qUrZf8GS0=
+golang.org/x/tools v0.0.0-20190121143147-24cd39ecf745 h1:aGoTCTvIjOOSnuAeiybrXAIbqAuPVB4DvRXlCrKT02s=
+golang.org/x/tools v0.0.0-20190121143147-24cd39ecf745/go.mod h1:n7NCudcB/nEzxVGmLbDWY5pfWTLqBcC2KZ6jyYvM4mQ=
